@@ -1,5 +1,5 @@
 .cart-section {
-    padding: 20px;
+    padding: 60px;
     text-align: center;
   }
   
@@ -25,7 +25,7 @@
   }
   
   .back-button {
-    background-color: #530404;
+    background-color: #66939b;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -36,4 +36,21 @@
   .back-button:hover {
     background-color: #4d0606;
   }
-  
+  .checkout-button-container {
+    text-align: center;
+    margin-top: 5px;
+}
+
+.checkout-button {
+    background-color: #66939b;
+    color: rgb(70, 64, 64);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.checkout-button:hover {
+    background-color: #550a1a;
+}

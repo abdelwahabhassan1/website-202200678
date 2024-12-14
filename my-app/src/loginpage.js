@@ -24,6 +24,11 @@ function LoginPage() {
             if (response.ok) {
                 const data = await response.json();
                 alert(`Logged in as: ${data.name}`);
+                
+                // Save userId in localStorage
+                localStorage.setItem('userId', data.id);
+
+                // Redirect to home page
                 window.location.href = '/home'; 
             } else {
                 const message = await response.text();

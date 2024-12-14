@@ -4,6 +4,8 @@ import Home from './Home';
 import SignUpPage from './Signup';
 import Cart from './Cart';
 import AboutUs from './AboutUs';
+import Reservations from './Reservation';
+
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -45,6 +47,9 @@ function App() {
         return <AboutUs />;
       default:
         return <LoginPage />;
+        case '/reservation':
+          const userId = localStorage.getItem('userId'); // Assuming you store `userId` in localStorage
+          return <Reservations userId={userId} />  
     }
   };
 

@@ -48,7 +48,7 @@ nav {
 }
 
 .featured-cars {
-    padding: 20px;
+    padding: 40px;
     text-align: center;
     color: #0f0e0e; 
 }
@@ -62,7 +62,7 @@ nav {
 
 .car-card {
     background-color: rgba(255, 255, 255, 0.8); 
-    border: 1px solid #ccc;
+    border: 1px solid #554e4e;
     border-radius: 5px;
     padding: 15px;
     width: 250px;
@@ -73,7 +73,7 @@ nav {
 
 .car-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 10px rgba(114, 110, 110, 0.2);
 }
 
 .car-card img {

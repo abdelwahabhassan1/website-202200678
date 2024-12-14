@@ -1,68 +1,89 @@
 import React, { useState } from 'react';
 import './CheckoutPage.css';
 
-function CheckoutPage({ selectedCar }) {
-  const [downPayment, setDownPayment] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+function CheckoutPage({ cartItems, clearCart }) {
+    const [downPayment, setDownPayment] = useState(0);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
-  const handleCheckout = async (e) => {
-    e.preventDefault();
+    const handleCheckout = async () => {
+        if (downPayment <= 0) {
+            setError('Please enter a valid down payment.');
+            return;
+        }
 
-    if (!downPayment || isNaN(downPayment) || Number(downPayment) <= 0) {
-      setError('Please enter a valid down payment amount');
-      return;
-    }
+        const userId = localStorage.getItem('userId'); // Get userId from localStorage
+        if (!userId) {
+            setError('You must be logged in to complete the checkout.');
+            return;
+        }
 
-    try {
-      const response = await fetch('http://localhost:555/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          carId: selectedCar.id,
-          downPayment: Number(downPayment),
-        }),
-      });
+        try {
+            const response = await fetch('http://localhost:555/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId,
+                    cartItems,
+                    downPayment,
+                }),
+            });
 
-      if (response.ok) {
-        setSuccessMessage(`Reservation successful for ${selectedCar.model}.`);
-        setError('');
-      } else {
-        const message = await response.text();
-        setError(message);
-      }
-    } catch (err) {
-      setError('An error occurred during checkout.');
-      console.error(err);
-    }
-  };
+            if (response.ok) {
+                setSuccess('Checkout successful! Thank you for your reservation.');
+                clearCart(); // Clear cart on successful checkout
 
-  return (
-    <div className="checkout-container">
-      <h2>Checkout</h2>
-      <div className="car-details">
-        <h3>{selectedCar.model}</h3>
-        <p>Price: ${selectedCar.price}</p>
-        <p>{selectedCar.description}</p>
-      </div>
-      <form onSubmit={handleCheckout}>
-        <div className="input-group">
-          <label htmlFor="downPayment">Down Payment</label>
-          <input
-            type="number"
-            id="downPayment"
-            value={downPayment}
-            onChange={(e) => setDownPayment(e.target.value)}
-            placeholder="Enter down payment amount"
-            required
-          />
+                // Preserve the session if necessary (e.g., userId is still in localStorage)
+                setTimeout(() => {
+                    window.location.href = '/home'; // Redirect to home after checkout
+                }, 2000); // Wait for 2 seconds before redirecting
+            } else {
+                const message = await response.text();
+                setError(message);
+            }
+        } catch (err) {
+            console.error(err);
+            setError('An error occurred during checkout.');
+        }
+    };
+
+    return (
+        <div className="checkout-container">
+            <h2>Checkout</h2>
+            {cartItems.length === 0 ? (
+                <p>Your cart is empty.</p>
+            ) : (
+                <>
+                    <div className="cart-summary">
+                        <h3>Your Items</h3>
+                        <ul>
+                            {cartItems.map((item, index) => (
+                                <li key={index}>
+                                    {item.model} - ${item.price}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="payment-section">
+                        <label>
+                            Down Payment:
+                            <input
+                                type="number"
+                                value={downPayment}
+                                onChange={(e) => setDownPayment(Number(e.target.value))}
+                                placeholder="Enter down payment"
+                            />
+                        </label>
+                        {error && <p className="error-message">{error}</p>}
+                        {success && <p className="success-message">{success}</p>}
+                        <button onClick={handleCheckout} className="checkout-btn">
+                            Complete Checkout
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
-        {error && <p className="error-message">{error}</p>}
-        {successMessage && <p className="success-message">{successMessage}</p>}
-        <button type="submit" className="checkout-btn">Reserve Now</button>
-      </form>
-    </div>
-  );
+    );
 }
 
 export default CheckoutPage;
